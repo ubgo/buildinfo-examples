@@ -60,11 +60,17 @@ jobs:
         with:
           go-version: "1.24"
 
+      - name: pre-fetch dependencies + pre-build
+        working-directory: ${{ matrix.example }}
+        run: |
+          go mod download
+          go build -o /tmp/example .
+
       - name: run for up to 5 seconds and capture stdout
         working-directory: ${{ matrix.example }}
         run: |
           set +e
-          timeout 5s go run . > out.txt 2>&1
+          timeout 5s /tmp/example > out.txt 2>&1
           exit_code=$?
           # 0 = exited cleanly, 124 = timeout fired (acceptable for short-lived examples)
           if [ "$exit_code" -ne 0 ] && [ "$exit_code" -ne 124 ]; then
