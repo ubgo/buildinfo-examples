@@ -1,0 +1,6 @@
+version:
+commit:
+build_time:
+go_version:
+goos/goarch:
+modules:

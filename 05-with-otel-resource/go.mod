@@ -1,0 +1,24 @@
+module github.com/ubgo/buildinfo-examples/05-with-otel-resource
+
+go 1.24
+
+require (
+	github.com/ubgo/buildinfo/contrib/buildinfo-otel v0.0.0
+	go.opentelemetry.io/otel v1.32.0
+	go.opentelemetry.io/otel/sdk v1.32.0
+)
+
+require (
+	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/ubgo/buildinfo v0.0.0 // indirect
+	go.opentelemetry.io/otel/metric v1.32.0 // indirect
+	go.opentelemetry.io/otel/trace v1.32.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
+)
+
+replace (
+	github.com/ubgo/buildinfo => ../../buildinfo
+	github.com/ubgo/buildinfo/contrib/buildinfo-otel => ../../buildinfo/contrib/buildinfo-otel
+)

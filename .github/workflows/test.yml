@@ -1,0 +1,93 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build (${{ matrix.example }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - 01-basic
+          - 02-ldflags-stamping
+          - 03-modules-list
+          - 04-http-nethttp
+          - 04b-http-gin
+          - 04c-http-chi
+          - 04d-http-echo
+          - 04e-http-fiber
+          - 05-with-otel-resource
+          - 06-with-zap
+          - 07-with-slog
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: build
+        working-directory: ${{ matrix.example }}
+        run: go build ./...
+
+      - name: vet
+        working-directory: ${{ matrix.example }}
+        run: go vet ./...
+
+  smoke:
+    name: smoke-run (${{ matrix.example }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - 01-basic
+          - 03-modules-list
+          - 06-with-zap
+          - 07-with-slog
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: run for up to 5 seconds and capture stdout
+        working-directory: ${{ matrix.example }}
+        run: |
+          set +e
+          timeout 5s go run . > out.txt 2>&1
+          exit_code=$?
+          # 0 = exited cleanly, 124 = timeout fired (acceptable for short-lived examples)
+          if [ "$exit_code" -ne 0 ] && [ "$exit_code" -ne 124 ]; then
+            echo "example exited unexpectedly with code $exit_code"
+            cat out.txt
+            exit 1
+          fi
+          if [ -f expected_output.txt ]; then
+            grep -F -f expected_output.txt out.txt || (echo "expected output not found"; cat out.txt; exit 1)
+          fi
+
+  ldflags:
+    name: ldflags stamping
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: build with ldflags + assert version stamped
+        working-directory: 02-ldflags-stamping
+        run: |
+          make build
+          ./app | grep -q "version=1.2.3" || (echo "ldflags override failed:"; ./app; exit 1)

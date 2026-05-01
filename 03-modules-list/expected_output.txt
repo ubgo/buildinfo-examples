@@ -1,0 +1,3 @@
+dependency modules
+PATH
+github.com/ubgo/buildinfo

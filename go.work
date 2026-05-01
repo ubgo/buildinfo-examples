@@ -1,0 +1,15 @@
+go 1.24
+
+use (
+	./01-basic
+	./02-ldflags-stamping
+	./03-modules-list
+	./04-http-nethttp
+	./04b-http-gin
+	./04c-http-chi
+	./04d-http-echo
+	./04e-http-fiber
+	./05-with-otel-resource
+	./06-with-zap
+	./07-with-slog
+)

@@ -1,0 +1,74 @@
+version: '3'
+
+# Reusable command runner for the ubgo/buildinfo-examples repo.
+# Run `task --list` to see all available tasks.
+
+vars:
+  EXAMPLES: >-
+    01-basic
+    02-ldflags-stamping
+    03-modules-list
+    04-http-nethttp
+    04b-http-gin
+    04c-http-chi
+    04d-http-echo
+    04e-http-fiber
+    05-with-otel-resource
+    06-with-zap
+    07-with-slog
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  build:
+    desc: Build every example
+    cmds:
+      - |
+        for ex in {{.EXAMPLES}}; do
+          echo "==> $ex"
+          (cd "$ex" && go build ./...) || exit 1
+        done
+
+  vet:
+    desc: Vet every example
+    cmds:
+      - |
+        for ex in {{.EXAMPLES}}; do
+          echo "==> $ex"
+          (cd "$ex" && go vet ./...) || exit 1
+        done
+
+  tidy:
+    desc: Run go mod tidy on every example
+    cmds:
+      - |
+        for ex in {{.EXAMPLES}}; do
+          echo "==> $ex"
+          (cd "$ex" && go mod tidy) || exit 1
+        done
+
+  smoke:
+    desc: Run every non-server example for ~3s and capture stdout
+    cmds:
+      - |
+        for ex in 01-basic 02-ldflags-stamping 03-modules-list 06-with-zap 07-with-slog; do
+          echo "==> $ex"
+          (cd "$ex" && timeout 3s go run . || true) | head -20
+        done
+
+  ci:
+    desc: Run the full local CI suite (vet + build)
+    cmds:
+      - task: vet
+      - task: build
+
+  clean:
+    desc: Remove example binaries
+    cmds:
+      - |
+        for ex in {{.EXAMPLES}}; do
+          rm -f "$ex"/{{.EXAMPLES}}.bin "$ex"/app "$ex"/main
+        done
