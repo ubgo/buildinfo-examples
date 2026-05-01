@@ -1,0 +1,4 @@
+github.com/ubgo/buildinfo v0.1.0 h1:QKfO8uTXEad6SFcEAxM+p5jAF9FmqqycdWKDBB3XQ6M=
+github.com/ubgo/buildinfo v0.1.0/go.mod h1:Hhx1hS14aH3Dw4QoKq5J9DYG5J1l6fGHYmIIwQJvT1U=
+github.com/ubgo/buildinfo/contrib/buildinfo-nethttp v0.1.0 h1:K6O8ZLJzcswbAJocCU/0wO7MVS4Zo6eRYRJzsWXVhB8=
+github.com/ubgo/buildinfo/contrib/buildinfo-nethttp v0.1.0/go.mod h1:CxVTf6wq0Cu7K8or2r7vwfJB0x3NwhJsjgbrK7R7MUE=
